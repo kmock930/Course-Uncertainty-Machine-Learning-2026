@@ -12,13 +12,13 @@ Syllabus: [Syllabus 2026](/Syllabus2.pdf)
 ### Topics
 
 **Lecture**  
-[Intro slides](/Lec01/Intro.pdf)
+[Intro slides](/Lec1/Lec_intro.pdf)
 
 ---
-### [Topic 1 Probabilistic reasoning](/Lec01)
+### [Topic 1 Probabilistic reasoning](/Lec1)
 **Lecture**  
-[Lec1]() \
-[Lec 1 Notebook](/Lec01/Bayesian%20Modeling%20in%20Julia.ipynb)
+[Lec1](/Lec1/Lec1.pdf) \
+[Lec 1 Notebook](/Lec1/Lec1_Bayesian_Modeling.ipynb)
 
 Reading: [2. Probability: Univariate Models by Kevin Murphy](https://probml.github.io/pml-book/book1.html)
 
