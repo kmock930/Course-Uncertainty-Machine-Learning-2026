@@ -28,7 +28,7 @@ Linear regression models the relationship between input features and continuous 
 
 #### 3. Bayesian Logistic Regression
 Logistic regression for binary classification problems:
-- **Model**: p(y=1|x) = σ(xᵀβ), where σ is the sigmoid function
+- **Model**: p(y=1|x) = σ(xᵀβ), where x is the input feature vector and σ is the sigmoid function
 - **Likelihood**: Bernoulli distribution for binary outcomes
 - **Prior specification** for regression coefficients
 - **Posterior computation** (typically requires approximation methods)
