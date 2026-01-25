@@ -42,7 +42,7 @@ Code: [Lec 2 Notebook1](/Lec2/Gaussian_Models_Final.ipynb) \
 
 ### [Topic 3 Bayesian logistic regression, Monte Carlo Sampling](/Lec02)
 **Lecture**  
-[Lec3 Bayesian Logistic regression - from slide 15 by prof. Rao](/Lec2/tpmi_w19_lec6_slides_print.pdf) \
+[Lec3 Bayesian Logistic regression - from slide 15 by prof. Rao](/Lec3/tpmi_w19_lec6_slides_print.pdf) \
 
 
 Reading: Chapters 8.2 and 10 from [Villani, Mattias, (2025), Bayesian Learning.](https://github.com/mattiasvillani/BayesianLearningBook/raw/main/pdf/BayesBook.pdf)\
