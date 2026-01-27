@@ -33,15 +33,21 @@ Probability refresher material related to "Math for machine learning": [Prince, 
 [Lec2 Bayesian Logistic regression - from slide 15 by prof. Rao](/Lec2/tpmi_w19_lec6_slides_print.pdf) \
 
 
-Reading: Chapters 2, 3.3, 5, 8.2 from [Villani, Mattias, (2025), Bayesian Learning.](https://github.com/mattiasvillani/BayesianLearningBook/raw/main/pdf/BayesBook.pdf)\
+Reading: Chapters 2, 3.3, 5 from [Villani, Mattias, (2025), Bayesian Learning.](https://github.com/mattiasvillani/BayesianLearningBook/raw/main/pdf/BayesBook.pdf)\
+
+Code: [Lec 2 Notebook1](/Lec2/Gaussian_Models_Final.ipynb) \
+[Lec 2 Notebook2, Bayesian Regression Using NumPyro](https://num.pyro.ai/en/stable/tutorials/bayesian_regression.html)
+
+---
+
+### [Topic 3 Bayesian logistic regression, Monte Carlo Sampling](/Lec02)
+**Lecture**  
+[Lec3 Bayesian Logistic regression - from slide 15 by prof. Rao](/Lec3/tpmi_w19_lec6_slides_print.pdf) \
 
 
-
-**Additional Material**\
-
+Reading: Chapters 8.2 and 10 from [Villani, Mattias, (2025), Bayesian Learning.](https://github.com/mattiasvillani/BayesianLearningBook/raw/main/pdf/BayesBook.pdf)\
 
 Code:
-
 
 ---
 ### Support or Contact
