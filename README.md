@@ -44,7 +44,11 @@ Code: [Lec 2 Notebook1](/Lec2/Gaussian_Models_Final.ipynb) \
 **Lecture**  
 [Lec3 Bayesian Logistic regression](/Lec3/LogisticRegression.pdf) \
 [Lec3 MCMC](/Lec3/MCMC.pdf) \
-[Lec3 Langevin Monte Carlo](/Lec3/LangevinMC.pdf) 
+[Lec3 Langevin Monte Carlo](/Lec3/LangevinMC.pdf)
+
+Code: [Lec 3 Notebook1: Laplace Approximation + Logistic Regression](/Lec3/Laplace_Approximation_Logistic_Regression.ipynb) \
+[Lec 3 Notebook2, Markov Chains and MCMC](/Lec3/Lec3a_python_numpyro.ipynb) \
+[Lec 3 Notebook3, Drift–Diffusion Processes and Langevin Monte Carlo](/Lec3/langevin_MALA.ipynb)
 
 Reading: Chapters 8.2 and 10 from [Villani, Mattias, (2025), Bayesian Learning.](https://github.com/mattiasvillani/BayesianLearningBook/raw/main/pdf/BayesBook.pdf)\
 [Roy Friedman, A Simplified Overview of Langevin Dynamics, 2022.](https://friedmanroy.github.io/blog/2022/Langevin/)
