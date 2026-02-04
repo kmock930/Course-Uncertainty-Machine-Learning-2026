@@ -29,8 +29,7 @@ Probability refresher material related to "Math for machine learning": [Prince, 
 **Lecture**  
 [Gaussian Formulas](/Lec2/GaussianFormulas.pdf) \
 [Lec2 Gaussian Estimates](/Lec2/GaussianModels.pdf) \
-[Lec2 Bayesian Linear regression - from slide 19 by prof. Rao](/Lec2/tpmi_w19_lec5_slides_print.pdf) \
-[Lec2 Bayesian Logistic regression - from slide 15 by prof. Rao](/Lec2/tpmi_w19_lec6_slides_print.pdf) \
+[Lec2 Bayesian Linear regression - from slide 19 by prof. Rao](/Lec2/tpmi_w19_lec5_slides_print.pdf)
 
 
 Reading: Chapters 2, 3.3, 5 from [Villani, Mattias, (2025), Bayesian Learning.](https://github.com/mattiasvillani/BayesianLearningBook/raw/main/pdf/BayesBook.pdf)\
@@ -65,11 +64,12 @@ Code:
 
 Code: [Lec 4 Notebook1: Kalman Filters](/Lec4/ssm_examples.ipynb) \
 [Lec 4 Notebook2, Particle fitlers](/Lec4/bearings_only_particle_filter.ipynb) \
-[Kalman and Bayesian Filters in Python (with a book)](https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python)
+[Kalman and Bayesian Filters in Python by Roger Labbe](https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python)
 
-Reading: 
-
-
+Reading:
+Chapters 17 from [Villani, Mattias, (2025), Bayesian Learning.](https://github.com/mattiasvillani/BayesianLearningBook/raw/main/pdf/BayesBook.pdf)\
+[Bayesian Filtering and Smoothing by Simo Särkkä, chapters 4 and 7](https://users.aalto.fi/~ssarkka/pub/cup_book_online_20131111.pdf)\
+[Kalman and Bayesian Filters in Python by Roger Labbe](https://drive.google.com/file/d/0By_SW19c1BfhSVFzNHc0SjduNzg/view?resourcekey=0-41olC9ht9xE3wQe2zHZ45A)
 ---
 ### Support or Contact
 [Miodrag Bolic email ](mailto:mbolic@site.uottawa.ca)
