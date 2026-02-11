@@ -70,5 +70,16 @@ Chapters 17 from [Villani, Mattias, (2025), Bayesian Learning.](https://github.c
 [Kalman and Bayesian Filters in Python by Roger Labbe](https://drive.google.com/file/d/0By_SW19c1BfhSVFzNHc0SjduNzg/view?resourcekey=0-41olC9ht9xE3wQe2zHZ45A)
 
 ---
+## [Topic 5 Variational inference](/Lec5)
+**Lecture**  
+[Lec5 Variational inference](/Lec5/VariationalInference.pdf)
+
+Code: [Lec 5 Notebook1: VI](/Lec5/From_entropy_to_ADVI.ipynb) \
+[Stochastic Variational Inference with NumPyro](https://phuijse.github.io/BLNNbook/chapters/variational/svi.html)
+
+Reading:
+
+
+---
 ### Support or Contact
 [Miodrag Bolic email ](mailto:mbolic@site.uottawa.ca)
