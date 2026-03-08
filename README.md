@@ -88,9 +88,24 @@ Reading:
 
 Code: [Lec 6 Notebook1: NN Parameterization Notebook](/Lec6/NN_Parameterization_Notebook.ipynb) \
 [Lec 6 Notebook2: VAE for Breathing Anomaly Detection](/Lec6/VAE_Breathing_Anomaly.ipynb) and [Slides](/Lec6/VAE_Breathing_Anomaly.pdf) \
-[Lec 6 Notebook3: BNN Notebook](/Lec6/Bnn_notebook.ipynb) 
+[Lec 6 Notebook3: BNN Notebook](/Lec6/Bnn_notebook.ipynb)
 
-Reading: An Introduction to Variational Autoencoder by D.P. Kingma and M. Welling.
+Reading: An Introduction to Variational Autoencoder by D.P. Kingma and M. Welling.\
+[Variational Autoencoder](https://phuijse.github.io/BLNNbook/chapters/neural_networks/vae.html), chapter from Bayesian Learning and Neural Networks by Pablo Huijse. \
+[Bayesian Neural Networks with numpyro](https://phuijse.github.io/BLNNbook/chapters/neural_networks/bayesian.html), chapter from Bayesian Learning and Neural Networks by Pablo Huijse. \
+[DPM 2 - Variational Inference for Deep Continuous LVMs](https://uvadlc-notebooks.readthedocs.io/en/latest/tutorial_notebooks/DL2/deep_probabilistic_models_II/tutorial_2b.html) by Wilker Aziz.
+
+---
+## [Topic 7 Calibration and Conformal Prediction](/Lec7)
+**Lecture**  
+[Lec7 Proper Scoring Rules and Calibration](/Lec7/Proper_Scoring_Rules_and_Calibration.pdf) \
+[Lec7 Conformal Prediction](/Lec7/Conformal_Prediction.pdf)
+
+Code: [Lec 7 Notebook: Calibration](/Lec7/calibration_lab_notebook.ipynb) \
+[Lec 7 Notebook: Conformal Prediction](/Lec7/conformal_prediction_lab_notebook.ipynb)
+
+Reading:
+
 ---
 ### Support or Contact
 [Miodrag Bolic email ](mailto:mbolic@site.uottawa.ca)
