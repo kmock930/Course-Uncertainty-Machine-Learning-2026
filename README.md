@@ -110,13 +110,44 @@ Reading: Kevin P. Murphy. Probabilistic Machine Learning: Advanced Topics. (Cali
 
 
 ---
-## [Topic 8 Sensor Fusion and Multimodal Learning](/Lec8)
+## [Topic 8 Sensor Fusion](/Lec8)
 **Lecture**  
-[Lec8 Sensor Fusion and Association](/Lec8/Sensor_Fusion.pdf) \
-[Lec8 Multimodal Learning](/Lec8/MultimodalLearning.pdf)
+[Lec8 Sensor Fusion and Association](/Lec8/Sensor_Fusion.pdf)
+
 
 Code: [Lec 8 Notebook: Sensor Fusion and Association](/Lec8/notebook_traditional_fusion.ipynb) \
 [Lec 8 Notebook: Covariance intersection](/Lec8/ci_vs_kf.ipynb)
+
+Reading:
+Li, X. R., & Jilkov, V. P. (2001).  
+**Survey of maneuvering target tracking: III. Measurement models.**  
+*Signal and Data Processing of Small Targets*, SPIE.
+
+---
+
+## [Topic 9 Diffusion models](/Lec9)
+**Lecture**  
+[Lec9 Diffusion Models](/Lec9/Diffusion_Models_Uncertainty_in_ML_course_2026.pdf)
+
+
+Code: [Lec 9 Notebook: Diffusion Models Nodebook](/Lec9/Diffusion_Session_Notebook_v2.ipynb) \
+[Lec 9 Notebook: Real DiffusionDet inference demo](/Lec9/DiffusionDet_real_inference_demo.ipynb)
+
+Reading:
+Chen, Shoufa, et al. "Diffusiondet: Diffusion model for object detection." Proceedings of the IEEE/CVF international conference on computer vision. 2023.
+
+---
+## [Topic 10 Multimodal Learning and Attention](/Lec10)
+**Lecture**  
+[Lec10 Multimodal Learning](/Lec10/MultimodalLearning.pdf) \
+[Lec10 Attention, Transformers, and Fusion](/Lec10/AttentionTransformerFusion.pdf)
+
+Code: [Lec 10 Notebook: Attention and Fusion](/Lec10/AttentionFusion.ipynb)
+
+Videos:\
+[Lecture 8: Attention and Transformers](https://www.youtube.com/watch?v=RQowiOF_FvQ) Stanford CS231N, Spring 2025. 
+
+[Multimodal Transformers](https://www.youtube.com/watch?v=90AGqQYYZc0&list=PL-Fhd_vrvisMYs8A5j7sj8YW1wHhoJSmW&index=9) - Part1 and Part 2 (CMU Multimodal Machine Learning, Fall 2023)]
 
 Reading:
 Wojke, N., Bewley, A., & Paulus, D. (2017).  
@@ -124,11 +155,8 @@ Wojke, N., Bewley, A., & Paulus, D. (2017).
 *2017 IEEE International Conference on Image Processing (ICIP).*  
 https://doi.org/10.48550/arXiv.1703.07402 \
 
-
-Li, X. R., & Jilkov, V. P. (2001).  
-**Survey of maneuvering target tracking: III. Measurement models.**  
-*Signal and Data Processing of Small Targets*, SPIE.
-
+---
+## [Topic 11 Sequential decision making](/Lec11)
 
 ### Support or Contact
 [Miodrag Bolic email ](mailto:mbolic@site.uottawa.ca)
