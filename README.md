@@ -134,7 +134,7 @@ Li, X. R., & Jilkov, V. P. (2001).
 
 Code: [Lec 9 Notebook: Diffusion Models Nodebook](/Lec9/Diffusion_Session_Notebook_v2.ipynb) \
 [Lec 9 Notebook: Real DiffusionDet inference demo](/Lec9/DiffusionDet_real_inference_demo.ipynb) \
-[SANA diffusion trajectory notebook](/Lec9/SANA_diffusion_trajectory_notebook.ipynb) 
+[SANA diffusion trajectory notebook](/Lec9/SANA_diffusion_trajectory_notebook.ipynb)
 
 Reading:
 Chen, Shoufa, et al. "Diffusiondet: Diffusion model for object detection." Proceedings of the IEEE/CVF international conference on computer vision. 2023.
@@ -160,6 +160,14 @@ https://doi.org/10.48550/arXiv.1703.07402 \
 
 ---
 ## [Topic 11 Sequential decision making](/Lec11)
+**Lecture**  
+[Lec11 Decision Making Under Uncertainty](/Lec11/Ch34_Decision_Making_Under_Uncertainty.pdf) \
+[Lec11 Reinforcement Learning](/Lec11/ch_35_Reinforcement_Learning.pdf) \
+[Lec11 Deep Reinforcement Learning for UAVs](/Lec11/UAV_SAC_example.pptx)
 
+Reading:
+Reading: Kevin P. Murphy. Probabilistic Machine Learning: Advanced Topics. (Chapters 34 and 35)
+
+---
 ### Support or Contact
 [Miodrag Bolic email ](mailto:mbolic@site.uottawa.ca)
