@@ -56,3 +56,70 @@ Distribution-free uncertainty sets with **guaranteed marginal coverage**.
 ## Practice Questions
 
 [`../Practice Questions/Problems_Calibration_Conformal_Questions.pdf`](../Practice%20Questions/Problems_Calibration_Conformal_Questions.pdf) — ECE computation, temperature scaling, conformal set construction, coverage guarantee derivation
+
+---
+
+## Key Derivations
+
+### 1. Proper Scoring Rule — Log Loss (NLL) is Strictly Proper
+
+A scoring rule `S(p̂, y)` is **proper** if `E_p[S(p, y)] ≤ E_p[S(q, y)]` for any `q ≠ p` — i.e. the forecaster is incentivised to report the true distribution.
+
+For NLL: `S(p̂, y) = −log p̂(y)`.
+
+Expected score when reporting `q` but truth is `p`:
+```
+E_p[−log q(Y)] = −Σ_y p(y) log q(y) = H(p, q) = H(p) + KL(p||q)
+```
+
+Since `KL(p||q) ≥ 0` and = 0 only when `p = q`, the minimum is achieved by reporting the true distribution → NLL is strictly proper.
+
+### 2. ECE (Expected Calibration Error) Derivation
+
+Partition predictions into M equal-width bins `B₁, …, B_M` on [0,1].
+
+Per-bin calibration error = |average confidence − average accuracy|:
+```
+ECE = Σ_m (|B_m|/n) · |conf(B_m) − acc(B_m)|
+```
+
+where:
+- `conf(B_m) = (1/|B_m|) Σ_{i∈B_m} p̂ᵢ`
+- `acc(B_m) = (1/|B_m|) Σ_{i∈B_m} 1[ŷᵢ = yᵢ]`
+
+ECE = 0 means perfect calibration. ECE > 0 with `conf > acc` means overconfidence.
+
+### 3. Temperature Scaling
+
+After training, apply a single scalar T > 0 to the logits `f(x)`:
+```
+p̂_T(y=k|x) = exp(f_k(x)/T) / Σ_j exp(f_j(x)/T)
+```
+
+- T > 1: softens the distribution → reduces overconfidence
+- T < 1: sharpens the distribution → increases confidence
+- T = 1: no change (original model)
+
+Optimal T is found by minimising NLL on a held-out calibration set (1D optimisation).
+
+**Why it works:** NLL is a proper scoring rule — minimising it on calibration data forces the model to report better-calibrated probabilities.
+
+### 4. Conformal Prediction Coverage Guarantee
+
+**Claim:** Split conformal guarantees `P(Y ∈ C(X)) ≥ 1 − α`.
+
+**Setup:** calibration scores `s₁, …, s_n` are i.i.d. exchangeable with test score `s_{n+1}`. The threshold:
+```
+q̂ = ⌈(n+1)(1−α)⌉-th smallest value of {s₁, …, s_n}
+```
+
+**Proof sketch:**
+```
+P(s_{n+1} ≤ q̂) = P(rank(s_{n+1}) ≤ ⌈(n+1)(1−α)⌉ in {s₁,…,s_{n+1}})
+```
+
+By exchangeability, all `n+1` orderings are equally likely. The probability that `s_{n+1}` is at or below the `⌈(n+1)(1−α)⌉`-th position is at least `1 − α`.
+
+Since `C(x) = {y : s(x,y) ≤ q̂}`, this gives `P(Y ∈ C(X)) ≥ 1 − α`. ✓
+
+The guarantee holds **for any model and any distribution** — only exchangeability is required.

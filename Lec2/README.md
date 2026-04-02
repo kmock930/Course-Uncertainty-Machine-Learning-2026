@@ -56,3 +56,75 @@
 
 - [`../Practice Questions/Problems_Gaussian_Models_Questions.pdf`](../Practice%20Questions/Problems_Gaussian_Models_Questions.pdf) — Precision additivity, online updates, Normal–Gamma
 - [`../Practice Questions/Problems_Linear_Regression_Questions.pdf`](../Practice%20Questions/Problems_Linear_Regression_Questions.pdf) — Posterior derivation, predictive distribution, MAP vs MLE
+
+---
+
+## Key Derivations
+
+### 1. Precision Additivity via Completing the Square
+
+Prior: `p(μ) ∝ exp(−λ₀(μ−μ₀)²/2)`, Likelihood: `p(x|μ) ∝ exp(−λΣ(xᵢ−μ)²/2)`
+
+Log-posterior (ignoring constants):
+```
+log p(μ|x) = −(λ₀/2)(μ−μ₀)² − (λ/2)Σ(xᵢ−μ)²
+```
+
+Expanding and collecting μ² and μ terms:
+```
+= −(1/2)(λ₀ + nλ)μ² + (λ₀μ₀ + nλx̄)μ + const
+```
+
+Completing the square:
+```
+= −(λₙ/2)(μ − μₙ)² + const
+```
+
+where **λₙ = λ₀ + nλ** (precisions add) and **μₙ = (λ₀μ₀ + nλx̄) / λₙ** (precision-weighted mean).
+
+### 2. Bayesian Linear Regression Posterior
+
+Model: `y = Xw + ε`, `p(y|X,w) = N(Xw, σ²I)`, prior `p(w) = N(0, τ²I)`
+
+Log-posterior:
+```
+log p(w|y) = −(1/2σ²)||y − Xw||² − (1/2τ²)||w||² + const
+```
+
+Completing the square in w:
+```
+= −(1/2)(w − μ_w)ᵀ Σ_w⁻¹ (w − μ_w) + const
+```
+
+where:
+- `Σ_w⁻¹ = (1/σ²)XᵀX + (1/τ²)I`
+- `μ_w = (1/σ²) Σ_w Xᵀy`
+
+Setting `λ = σ²/τ²`: `μ_w = (XᵀX + λI)⁻¹ Xᵀy` = **Ridge regression** solution.
+
+### 3. Bayesian Predictive Distribution
+
+For new input `x*`:
+```
+p(y*|x*, y) = ∫ p(y*|x*, w) p(w|y) dw
+```
+
+Since both factors are Gaussian, the integral is also Gaussian:
+```
+p(y*|x*, y) = N(x*ᵀ μ_w,  x*ᵀ Σ_w x* + σ²)
+```
+
+- `x*ᵀ μ_w` — prediction from posterior mean weights
+- `x*ᵀ Σ_w x*` — **epistemic** variance (weight uncertainty)
+- `σ²` — **aleatoric** variance (irreducible noise)
+
+### 4. Conditional Gaussian (Schur Complement)
+
+Given joint: `[x; y] ~ N([μₓ; μᵧ], [[Σₓₓ, Σₓᵧ]; [Σᵧₓ, Σᵧᵧ]])`
+
+Condition on y by completing the square in x:
+```
+p(x|y) = N(μₓ + Σₓᵧ Σᵧᵧ⁻¹(y−μᵧ),  Σₓₓ − Σₓᵧ Σᵧᵧ⁻¹ Σᵧₓ)
+```
+
+The term `Σₓₓ − Σₓᵧ Σᵧᵧ⁻¹ Σᵧₓ` is the **Schur complement** — always ≤ Σₓₓ (conditioning reduces uncertainty).

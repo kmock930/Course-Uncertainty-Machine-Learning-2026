@@ -54,3 +54,73 @@ Place a prior over weights `w ~ p(w)` instead of learning a point estimate.
 
 - [`../Practice Questions/Problems_VAE_Questions.pdf`](../Practice%20Questions/Problems_VAE_Questions.pdf) — ELBO for VAEs, reparameterization, anomaly detection
 - [`../Practice Questions/Problems_NN_Parameterization_Questions.pdf`](../Practice%20Questions/Problems_NN_Parameterization_Questions.pdf) — MDN, heteroscedastic loss, output heads
+
+---
+
+## Key Derivations
+
+### 1. VAE ELBO (Jensen's Inequality Applied)
+
+Marginal log-likelihood:
+```
+log p_θ(x) = log ∫ p_θ(x|z) p(z) dz
+           = log E_{q_φ(z|x)}[p_θ(x,z) / q_φ(z|x)]
+           ≥ E_{q_φ}[log p_θ(x|z)] − KL(q_φ(z|x) || p(z))     ← ELBO
+```
+
+The two terms have clear roles:
+- **Reconstruction:** `E_{q_φ}[log p_θ(x|z)]` — decoder should reconstruct x well
+- **KL regularisation:** `KL(q_φ(z|x) || p(z))` — encoder posterior should stay close to prior `N(0,I)`
+
+### 2. KL Divergence Between Two Gaussians (closed form)
+
+For `q = N(μ, σ²)` and `p = N(0, I)`:
+```
+KL(q || p) = (1/2)(σ² + μ² − 1 − log σ²)
+```
+
+**Derivation:**
+```
+KL(q||p) = E_q[log q(z)] − E_q[log p(z)]
+         = E_q[−(z−μ)²/(2σ²) − (1/2)log(2πσ²)]
+           − E_q[−z²/2 − (1/2)log(2π)]
+         = −(1/2) − (1/2)log σ² + (1/2)E_q[z²]
+         = −(1/2) − (1/2)log σ² + (1/2)(σ² + μ²)
+         = (1/2)(σ² + μ² − 1 − log σ²)
+```
+
+This is differentiable w.r.t. μ and σ — enables direct backpropagation through the KL term.
+
+### 3. Reparameterization in VAEs
+
+Without reparameterization, `z ~ q_φ(z|x) = N(μ_φ(x), σ_φ²(x))` is a stochastic node — gradients cannot flow.
+
+With reparameterization:
+```
+z = μ_φ(x) + σ_φ(x) ⊙ ε,   ε ~ N(0, I)
+```
+
+Now z is a **deterministic function** of x and ε, so:
+```
+∂z/∂μ_φ = 1,   ∂z/∂σ_φ = ε
+```
+
+Gradients flow through μ_φ and σ_φ (encoder) during backpropagation. ε is a fixed sample.
+
+### 4. MC Dropout Uncertainty Decomposition
+
+For T stochastic forward passes with predictions `ŷ₁, …, ŷ_T`:
+
+**Predictive mean:** `ȳ = (1/T) Σ_t ŷ_t`
+
+**Total predictive variance:**
+```
+Var[y*|x*] = (1/T) Σ_t ŷ_t² − ȳ²        (for regression)
+```
+
+This decomposes as:
+```
+Var[y*|x*] = Epistemic (variance in ŷ_t) + Aleatoric (output noise σ²)
+```
+
+MC Dropout approximates the posterior `p(w|D)` by treating dropout masks as a variational distribution, so the variance across forward passes approximates epistemic uncertainty.

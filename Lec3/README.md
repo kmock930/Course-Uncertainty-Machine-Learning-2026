@@ -52,3 +52,79 @@
 - [`../Practice Questions/Problems_Logistic_Regression_Questions.pdf`](../Practice%20Questions/Problems_Logistic_Regression_Questions.pdf) — Laplace approximation derivation, predictive distribution
 - [`../Practice Questions/Problems_MCMC_Questions.pdf`](../Practice%20Questions/Problems_MCMC_Questions.pdf) — Metropolis–Hastings, detailed balance, diagnostics
 - [`../Practice Questions/Problems_Langevin_Questions.pdf`](../Practice%20Questions/Problems_Langevin_Questions.pdf) — Langevin SDE, ULA vs MALA, discretisation bias
+
+---
+
+## Key Derivations
+
+### 1. Laplace Approximation
+
+Goal: approximate the intractable posterior `p(θ|x)` near the MAP estimate `θ̂`.
+
+**Step 1 — Taylor expand** log-posterior around `θ̂`:
+```
+log p(θ|x) ≈ log p(θ̂|x) + (1/2)(θ−θ̂)ᵀ H (θ−θ̂)
+```
+where `H = ∇²_θ log p(θ|x)|_{θ̂}` (Hessian; negative definite at a mode).
+
+**Step 2 — Exponentiate:**
+```
+p(θ|x) ≈ N(θ̂, −H⁻¹)
+```
+
+The covariance is `Σ = −H⁻¹` — curvature of the log-posterior (flatter ↔ more uncertainty).
+
+**Step 3 — Predictive for logistic regression** (probit approximation):
+```
+p(y*=1|x*) ≈ σ(x*ᵀθ̂ / √(1 + π/8 · x*ᵀΣx*))
+```
+
+### 2. Metropolis–Hastings: Detailed Balance
+
+For the chain to have stationary distribution `π(θ) = p(θ|x)`, we need detailed balance:
+```
+π(θ) T(θ→θ') = π(θ') T(θ'→θ)
+```
+
+where `T(θ→θ') = q(θ'|θ) · A(θ, θ')` is the transition kernel.
+
+Setting `A(θ, θ') = min(1, r)` with:
+```
+r = π(θ')q(θ|θ') / (π(θ)q(θ'|θ))
+  = p(θ'|x) q(θ|θ') / (p(θ|x) q(θ'|θ))
+```
+
+**Key cancellation:** `p(x)` cancels in the ratio `p(θ'|x)/p(θ|x)` → only unnormalised posteriors needed.
+
+Verification of detailed balance:
+```
+π(θ) q(θ'|θ) min(1, r) = min(π(θ)q(θ'|θ), π(θ')q(θ|θ'))
+                        = π(θ') q(θ|θ') min(1, 1/r)
+```
+Both sides equal `min(π(θ)q(θ'|θ), π(θ')q(θ|θ'))`. ✓
+
+### 3. Langevin SDE → Euler–Maruyama Discretisation
+
+**Continuous SDE** with stationary distribution `π(θ) ∝ exp(−U(θ))`:
+```
+dθ = −(1/2)∇U(θ) dt + dW_t = (1/2)∇ log π(θ) dt + dW_t
+```
+
+**Euler–Maruyama** (step size h):
+```
+θ_{k+1} = θ_k + (h/2)∇ log π(θ_k) + √h · ε_k,   ε_k ~ N(0, I)
+```
+
+This is **ULA** — discretisation error makes it biased (does not leave π exactly).
+
+**MALA** adds a Metropolis–Hastings correction with proposal:
+```
+q(θ'|θ) = N(θ + (h/2)∇ log π(θ), h I)
+```
+
+Acceptance ratio:
+```
+A = min(1,  π(θ') q(θ|θ') / (π(θ) q(θ'|θ)))
+```
+
+MALA is unbiased — the correction removes the discretisation error at the cost of potential rejections.

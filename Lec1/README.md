@@ -48,3 +48,64 @@
 ## Practice Questions
 
 [`../Practice Questions/Problems_Bayesian_Questions.pdf`](../Practice%20Questions/Problems_Bayesian_Questions.pdf) — Beta-Binomial update, MLE vs MAP, credible intervals, PPD computation
+
+---
+
+## Key Derivations
+
+### 1. Bayes' Rule from the Product Rule
+Starting from the joint distribution:
+
+```
+p(θ, x) = p(θ|x) p(x) = p(x|θ) p(θ)
+```
+
+Rearranging: `p(θ|x) = p(x|θ) p(θ) / p(x)`
+
+The evidence `p(x) = ∫ p(x|θ) p(θ) dθ` is a normalising constant, so:
+
+`p(θ|x) ∝ p(x|θ) p(θ)`
+
+### 2. Beta–Binomial Conjugate Update (completing the algebra)
+
+Prior: `p(θ) = Beta(α, β) ∝ θ^{α−1} (1−θ)^{β−1}`  
+Likelihood for k successes in N trials: `p(k|θ) ∝ θ^k (1−θ)^{N−k}`
+
+Posterior:
+```
+p(θ|k) ∝ p(k|θ) p(θ)
+        ∝ θ^k (1−θ)^{N−k} · θ^{α−1} (1−θ)^{β−1}
+        = θ^{(α+k)−1} (1−θ)^{(β+N−k)−1}
+        = Beta(α+k, β+N−k)
+```
+
+This is the same Beta family with updated parameters — the definition of conjugacy.
+
+**MAP** = mode of `Beta(α+k, β+N−k)` = `(α+k−1) / (α+β+N−2)` (set derivative to zero)  
+**MLE** = `k/N` (corresponds to α=β=1, i.e. uniform prior)
+
+### 3. Posterior Predictive Distribution (PPD)
+
+For a new trial `x̃ ∈ {0,1}`:
+```
+p(x̃=1 | k) = ∫₀¹ p(x̃=1|θ) p(θ|k) dθ
+             = ∫₀¹ θ · Beta(θ; α+k, β+N−k) dθ
+             = E[θ | k]        (mean of Beta posterior)
+             = (α+k) / (α+β+N)
+```
+
+Intuition: the PPD mean equals the posterior mean — parameter uncertainty is "averaged out".
+
+### 4. MAP as Regularised MLE
+
+Log-posterior = log-likelihood + log-prior:
+```
+log p(θ|x) = log p(x|θ) + log p(θ) + const
+```
+
+With a Gaussian prior `p(θ) = N(0, τ²)`:
+```
+log p(θ|x) = log p(x|θ) − θ²/(2τ²) + const
+```
+
+Maximising this is MLE with L2 penalty `λ = 1/τ²` → Ridge regression / weight decay.

@@ -54,3 +54,73 @@ The problem of assigning measurements to tracks when multiple targets exist.
 ## Practice Questions
 
 [`../Practice Questions/Problems_Fusion_Questions.pdf`](../Practice%20Questions/Problems_Fusion_Questions.pdf) — Precision-weighted fusion derivation, multivariate fusion, CI algorithm, PDAF scenario
+
+---
+
+## Key Derivations
+
+### 1. Optimal Gaussian Fusion (MLE/MAP Derivation)
+
+Two sensors: `y₁ ~ N(z, σ₁²)`, `y₂ ~ N(z, σ₂²)`, independent.
+
+Log-likelihood:
+```
+log p(y₁, y₂|z) = −(y₁−z)²/(2σ₁²) − (y₂−z)²/(2σ₂²) + const
+```
+
+Setting `∂/∂z = 0`:
+```
+(y₁−z)/σ₁² + (y₂−z)/σ₂² = 0
+z(1/σ₁² + 1/σ₂²) = y₁/σ₁² + y₂/σ₂²
+ẑ = (y₁/σ₁² + y₂/σ₂²) / (1/σ₁² + 1/σ₂²)
+```
+
+Fused precision: `1/σ²_fused = 1/σ₁² + 1/σ₂²` — always greater than either individual precision. The fused estimate always lies between `y₁` and `y₂`.
+
+### 2. Covariance Intersection Derivation
+
+When cross-covariances between estimates are unknown but bounded, we need a conservative (safe) fusion.
+
+CI fused covariance: `P_f⁻¹ = ω P₁⁻¹ + (1−ω) P₂⁻¹`
+
+**Why conservative?** For any true cross-covariance `P₁₂`:
+```
+[P₁  P₁₂]     must be PSD
+[P₁₂ᵀ P₂]
+```
+
+The CI estimate satisfies `P_f ≥ P_true` for all valid `P₁₂` (where ≥ means "more uncertain"). This prevents false confidence.
+
+**Optimal ω:** minimise `tr(P_f)` or `det(P_f)` over `ω ∈ [0,1]`.
+
+### 3. Kalman Filter = Optimal Gaussian Fusion
+
+The Kalman update is exactly the two-sensor fusion above with:
+- Sensor 1: the predicted state `z̃ₜ ~ N(z̃ₜ, P̃ₜ)`
+- Sensor 2: the measurement `yₜ ~ N(Czₜ, R)` (after transforming through C)
+
+Information form update:
+```
+Λₙ = Λₙ₋₁ + CᵀR⁻¹C       (precision matrix update)
+ηₙ = ηₙ₋₁ + CᵀR⁻¹yₜ      (information vector update)
+μₙ = Λₙ⁻¹ ηₙ               (mean estimate)
+```
+
+This is equivalent to the standard Kalman gain form via the Woodbury matrix identity.
+
+### 4. PDAF Measurement-Origin Uncertainty
+
+When the measurement source is uncertain (track + clutter), the PDAF weights:
+```
+βᵢ = P(mᵢ is from target | measurements)    (association probability)
+β₀ = P(no measurement from target)
+```
+
+Combined measurement: `ȳ = Σᵢ βᵢ mᵢ`  
+**Spread-of-innovations covariance** (extra term for association uncertainty):
+```
+Pₜ = β₀ P̃ₜ + (1−β₀)P̃KF + P̃_spread
+P̃_spread = KₜΣᵢβᵢ(νᵢνᵢᵀ) − ȳȳᵀ)Kₜᵀ
+```
+
+This term inflates the posterior covariance when association is uncertain — prevents overconfidence in noisy environments.
