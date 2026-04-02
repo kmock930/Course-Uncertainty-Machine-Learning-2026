@@ -1,102 +1,58 @@
 # Lecture 2 – Bayesian Inference for Gaussians and Bayesian Linear Regression
 
-**Course:** ELG 5218 / CSI 5218 / EACJ 5600 – Uncertainty Evaluation in Engineering Measurements and Machine Learning  
-**Date:** January 24, 2026  
-**Instructor:** Miodrag Bolic, University of Ottawa
+> **Revision summary** | ELG 5218 – Uncertainty Evaluation in Engineering Measurements and Machine Learning  
+> Slides: `GaussianModels.pdf`, `GaussianFormulas.pdf`, `tpmi_w19_lec5_slides_print.pdf` · Notebook: `Gaussian_Models_Final.ipynb`  
+> Reading: Villani Ch. 2, 3.3, 5
 
 ---
 
-## Overview
+## Core Ideas
 
-This lecture develops the Bayesian treatment of **Gaussian models**, from scalar to multivariate
-settings, and extends the framework to **Bayesian linear regression** and **Bayesian logistic
-regression** (introduction). Emphasis is placed on precision additivity (the engine of conjugate
-Gaussian updates), sequential/online learning, the Normal–Gamma conjugate family for unknown
-variance, and multivariate sensor fusion via the joint Gaussian.
+### Gaussian Conjugate Update (known variance σ²)
 
----
+- Prior: `μ ~ N(μ₀, σ₀²)`, Likelihood: `xᵢ ~ N(μ, σ²)`
+- **Precisions add:** `λₙ = λ₀ + n·λ` where `λ = 1/σ²`
+- **Posterior mean** = precision-weighted average:
 
-## Learning Goals
+  `μₙ = (λ₀μ₀ + nλx̄) / (λ₀ + nλ)`
 
-By the end of this lecture you should be able to:
+- As `n → ∞`: posterior concentrates on MLE `x̄` (data dominates).
+- As `σ₀² → 0` (very strong prior): posterior stays near `μ₀`.
 
-- Explain why Gaussian distributions dominate Bayesian inference (CLT, conjugacy, tractability).
-- Compute the **conjugate Bayesian update** for a Gaussian likelihood (known and unknown variance).
-- Derive **precision additivity** and the precision-weighted posterior mean.
-- Apply **sequential (online) Bayesian updates** with streaming observations.
-- Work with the **Normal–Gamma** conjugate family for jointly unknown mean and variance.
-- Manipulate **multivariate Gaussians**: marginals, conditionals, affine transforms.
-- Set up and solve **Bayesian linear regression**, deriving the predictive distribution.
+### Sequential (Online) Updates
+- Process one observation at a time; previous posterior becomes the new prior.
+- Learning rate `wₙ = λ / (λₙ₋₁ + λ)` decreases as `n` grows — model becomes more certain.
 
----
+### Unknown Variance — Normal–Gamma Family
+- Joint conjugate prior: `(μ, λ) ~ NormalGamma(μ₀, κ₀, α₀, β₀)`
+- After `n` observations: `κₙ = κ₀ + n`, `αₙ = α₀ + n/2`
+- Marginal for `μ` is **Student-t** (heavier tails → robust to outliers)
+- `κ₀` acts as an effective prior sample size for the mean.
 
-## Topics Covered
+### Multivariate Gaussian – Key Identities
+- **Marginal:** `p(x) = N(μₓ, Σₓₓ)` — just slice the mean/covariance block.
+- **Conditional:** `p(x|y) = N(μₓ + Σₓᵧ Σᵧᵧ⁻¹(y−μᵧ), Σₓₓ − Σₓᵧ Σᵧᵧ⁻¹ Σᵧₓ)` — Schur complement shrinks variance.
 
-### Gaussian Models (`GaussianModels.pdf`)
-- Why Gaussians? Universality (CLT), analytical tractability, conjugacy, convex optimization.
-- Univariate and multivariate Gaussian density; precision notation.
-- **Known variance case**: precision additivity; posterior as precision-weighted average of prior mean and sample mean.
-- **Online (sequential) learning**: recursive Bayesian update; decreasing learning rate as evidence accumulates.
-- **Unknown variance**: Normal–Gamma conjugate prior; Student-t marginal; robustness interpretation.
-- **Monte Carlo** posterior sampling: functions of parameters, practical inference.
-- **Multivariate case**: covariance and precision matrices; sensor fusion; conditional independence.
-
-### Gaussian Identities Reference Sheet (`GaussianFormulas.pdf`)
-- Marginal and conditional distributions for partitioned Gaussian vectors.
-- Affine transformations of Gaussians.
-- Key scalar identities (completing the square, conjugate update formula).
-- Truncated Gaussian distributions.
-- Applications to Bayesian linear regression derivations.
-
-### Bayesian Linear Regression (`tpmi_w19_lec5_slides_print.pdf` and `tpmi_w19_lec6_slides_print.pdf`)
-- Linear regression as a probabilistic model; Gaussian likelihood.
-- Conjugate Gaussian prior on weights; closed-form posterior.
-- Posterior predictive distribution for new inputs (predictive intervals).
-- Ridge regression as MAP with a Gaussian prior.
-- Extension to Bayesian logistic regression (introduction).
+### Bayesian Linear Regression
+- Model: `y = Xw + ε`, `ε ~ N(0, σ²I)`, prior `w ~ N(0, τ²I)`
+- **Posterior:** `w|y ~ N(μ_w, Σ_w)`:
+  - `Σ_w⁻¹ = (1/σ²) XᵀX + (1/τ²) I`
+  - `μ_w = (1/σ²) Σ_w Xᵀy`
+- **MAP = Ridge regression** with `λ = σ²/τ²`
+- **Predictive distribution:** `p(y*|x*, y) = N(x*ᵀμ_w, x*ᵀΣ_w x* + σ²)` — captures both weight uncertainty and noise.
 
 ---
 
-## Materials
+## Things to Remember
 
-| File | Description |
-|------|-------------|
-| `GaussianModels.pdf` | Main lecture slides: Bayesian Gaussian models (33 slides) |
-| `GaussianFormulas.pdf` | Reference sheet: Gaussian identities and worked examples |
-| `tpmi_w19_lec5_slides_print.pdf` | Guest slides: Bayesian linear regression (from slide 19 by Prof. Rao) |
-| `tpmi_w19_lec6_slides_print.pdf` | Guest slides: Bayesian logistic regression introduction |
-| `Gaussian_Models_Final.ipynb` | Jupyter notebook: Gaussian model inference and sensor fusion |
-
----
-
-## Recommended Reading
-
-- **Villani, Mattias (2025). *Bayesian Learning*.** – Chapters 2, 3.3, and 5.
-  [PDF](https://github.com/mattiasvillani/BayesianLearningBook/raw/main/pdf/BayesBook.pdf)
-- **NumPyro Bayesian Regression Tutorial:**
-  [Bayesian Regression Using NumPyro](https://num.pyro.ai/en/stable/tutorials/bayesian_regression.html)
+- **Precision** (not variance) is additive in Bayesian Gaussian updates.
+- Posterior mean always lies between the prior mean and the MLE.
+- Bayesian linear regression yields **prediction intervals**, not just a point estimate.
+- Marginalising out unknown precision gives heavier-tailed Student-t distributions — more robust.
 
 ---
 
 ## Practice Questions
 
-Relevant practice sets from the `Practice Questions/` folder:
-
-- `Problems_Gaussian_Models_Questions.pdf` / `Problems_Gaussian_Models_Solutions.pdf` – Precision additivity, precision-weighted averaging, sequential updates, Normal–Gamma hyperparameters, multivariate sensor fusion.
-- `Problems_Linear_Regression_Questions.pdf` / `Problems_Linear_Regression_Solutions.pdf` – Bayesian linear regression derivations, posterior and predictive distributions, MAP vs. MLE, model comparison.
-
----
-
-## Key Concepts
-
-| Concept | Description |
-|---------|-------------|
-| Precision (λ) | Reciprocal of variance; precisions add in Bayesian updates |
-| Conjugate Gaussian update | Normal prior × Normal likelihood → Normal posterior |
-| Precision-weighted mean | Posterior mean is a weighted combination of prior mean and MLE |
-| Online/sequential learning | Recursive update: add one observation at a time |
-| Normal–Gamma | Conjugate prior for jointly unknown Gaussian mean and precision |
-| Student-t marginal | Marginalizing over precision yields a heavy-tailed distribution |
-| Multivariate Gaussian | Generalization: covariance matrix, Schur complement for conditioning |
-| Bayesian linear regression | Gaussian prior on weights yields closed-form posterior and predictive |
-| Predictive distribution | Posterior predictive integrates weight uncertainty into forecasts |
+- [`../Practice Questions/Problems_Gaussian_Models_Questions.pdf`](../Practice%20Questions/Problems_Gaussian_Models_Questions.pdf) — Precision additivity, online updates, Normal–Gamma
+- [`../Practice Questions/Problems_Linear_Regression_Questions.pdf`](../Practice%20Questions/Problems_Linear_Regression_Questions.pdf) — Posterior derivation, predictive distribution, MAP vs MLE

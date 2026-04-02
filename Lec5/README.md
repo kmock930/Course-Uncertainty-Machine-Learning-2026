@@ -1,105 +1,59 @@
 # Lecture 5 – Variational Inference
 
-**Course:** ELG 5218 / CSI 5218 / EACJ 5600 – Uncertainty Evaluation in Engineering Measurements and Machine Learning  
-**Date:** February 25, 2026  
-**Instructor:** Miodrag Bolic, University of Ottawa
+> **Revision summary** | ELG 5218 – Uncertainty Evaluation in Engineering Measurements and Machine Learning  
+> Slides: `VariationalInference.pdf` · Notebook: `From_entropy_to_SVI.ipynb`  
+> Reading: Villani (VI chapters); [SVI with NumPyro](https://phuijse.github.io/BLNNbook/chapters/variational/svi.html)
 
 ---
 
-## Overview
+## Core Ideas
 
-This lecture introduces **Variational Inference (VI)** as a scalable alternative to MCMC for
-approximate Bayesian inference. Rather than sampling from the posterior, VI casts inference as
-an **optimization problem**: find a tractable distribution `q(θ)` that is as close as possible
-to the true posterior `p(θ|x)`, measured by the KL divergence. The lecture builds from
-gradient descent and automatic differentiation up to **Stochastic (Black-box) VI** and the
-**reparameterization trick** used in modern deep generative models.
+### The Central Idea
+- Posterior `p(θ|x)` is intractable → find the closest tractable approximation `q(θ; φ)`.
+- Minimise `KL(q || p)` ↔ maximise the **ELBO**:
 
----
+  `ELBO(φ) = E_q[log p(x,θ)] − E_q[log q(θ)] = log p(x) − KL(q||p)`
 
-## Learning Goals
+- Because `KL ≥ 0`, ELBO ≤ log p(x) always. Higher ELBO = closer approximation.
 
-By the end of this lecture you should be able to:
+### Mean-Field Approximation
+- Assume fully factored: `q(θ) = ∏ᵢ qᵢ(θᵢ)` — each parameter independent.
+- **CAVI update** for factor `qⱼ`: `log qⱼ*(θⱼ) = E_{q_{-j}}[log p(x, θ)] + const`
+- Iterate over factors until ELBO converges.
 
-- Explain why variational inference is often preferred over MCMC for large-scale problems.
-- Define the **Evidence Lower BOund (ELBO)** and show how maximizing it minimizes `KL(q||p)`.
-- Apply the **mean-field approximation** to factorize the variational family.
-- Derive coordinate ascent VI (CAVI) updates for simple models.
-- Use **stochastic (black-box) VI** with the REINFORCE / score-function gradient estimator.
-- Apply the **reparameterization trick** for low-variance pathwise gradient estimation.
-- Implement variational inference using NumPyro / Pyro (SVI API).
+### Stochastic (Black-box) VI
+- Replace exact ELBO expectations with Monte Carlo estimates over mini-batches.
+- **Score-function gradient (REINFORCE):** `∇_φ ELBO = E_q[(log p(x,θ) − log q(θ)) ∇_φ log q(θ)]`
+  - Unbiased but **high variance** — needs many samples or control variates.
 
----
-
-## Topics Covered
-
-### Variational Inference (`VariationalInference.pdf`)
-
-**Part 1 – Gradient Machinery**
-- Gradient descent and stochastic gradient descent (SGD).
-- Stochastic optimization: mini-batches, learning rate schedules.
-- **Automatic differentiation (autodiff)**: forward and reverse mode; JAX/PyTorch.
-
-**Part 2 – KL Divergence and the ELBO**
-- KL divergence `KL(q||p)`: definition, non-symmetry, non-negativity.
-- The ELBO as a lower bound on the log marginal likelihood log p(x).
-- ELBO decomposition: expected log-likelihood minus KL to prior.
-- Tightening the bound: better `q` → higher ELBO → closer approximation.
-
-**Part 3 – Variational Families**
-- Mean-field approximation: fully factored `q(θ) = ∏ q_i(θ_i)`.
-- Coordinate Ascent Variational Inference (CAVI) updates.
-- Structured / normalizing flow families for richer approximations.
-
-**Part 4 – Stochastic (Black-box) VI**
-- Replacing exact expectations with Monte Carlo estimates.
-- Score-function (REINFORCE) gradient estimator; high variance issue.
-- Control variates and baselines for variance reduction.
-
-**Part 5 – Reparameterization and Pathwise Gradients**
-- Reparameterization trick: sample `ε ~ p(ε)`, set `θ = g(ε, φ)` for differentiable sampling.
-- Low-variance pathwise gradient of the ELBO.
-- Why this is the key enabler for Variational Autoencoders (Lec 6).
+### Reparameterization Trick
+- Write `θ = g(ε, φ)` with `ε ~ p(ε)` (noise-free base distribution, e.g. `N(0,1)`).
+- Example: `θ ~ N(μ, σ²)` → `θ = μ + σε`, `ε ~ N(0,1)`
+- Gradient flows through `g` → **low-variance** pathwise gradient of ELBO.
+- This is the key operation inside VAEs (Lec 6).
 
 ---
 
-## Materials
+## MCMC vs VI — Quick Comparison
 
-| File | Description |
-|------|-------------|
-| `VariationalInference.pdf` | Lecture slides: Variational inference end-to-end (64 slides) |
-| `From_entropy_to_SVI.ipynb` | Notebook: From entropy and KL divergence to Stochastic VI |
+| | MCMC | VI |
+|--|--|--|
+| Approach | Sampling | Optimisation |
+| Asymptotic | Exact (given enough samples) | Approximate (biased by q family) |
+| Scalability | Slow for large datasets | Scales with SGD |
+| Uncertainty | Full posterior | Restricted to q family |
 
 ---
 
-## Recommended Reading
+## Things to Remember
 
-- **Villani, Mattias (2025). *Bayesian Learning*.** – Relevant variational inference chapters.
-  [PDF](https://github.com/mattiasvillani/BayesianLearningBook/raw/main/pdf/BayesBook.pdf)
-- **Stochastic Variational Inference with NumPyro:**
-  [SVI Tutorial](https://phuijse.github.io/BLNNbook/chapters/variational/svi.html)
+- Maximising ELBO ≡ minimising `KL(q||p)` (they differ by the constant `log p(x)`).
+- Mean-field VI underestimates posterior variance (independence assumption squeezes correlations).
+- Reparameterization only works for **continuous** latent variables; use score-function for discrete.
 
 ---
 
 ## Practice Questions
 
-Relevant practice sets from the `Practice Questions/` folder:
-
-- `Problems_VI_Questions.pdf` / `Problems_VI_Solutions.pdf` – ELBO derivation, mean-field approximation, CAVI updates, reparameterization trick.
-- `SVI_Problems.pdf` / `SVI_solutions.pdf` – Stochastic variational inference implementation and analysis problems.
-
----
-
-## Key Concepts
-
-| Concept | Description |
-|---------|-------------|
-| Variational inference | Approximate posterior inference via optimization instead of sampling |
-| ELBO | Evidence Lower BOund; surrogate objective for log p(x); ELBO = log p(x) − KL(q\|\|p) |
-| KL divergence | Measure of difference between two distributions; KL(q\|\|p) ≥ 0 |
-| Mean-field | Variational family where parameters are mutually independent |
-| CAVI | Coordinate Ascent VI: iteratively optimize each variational factor |
-| Score-function gradient | Unbiased but high-variance gradient estimator for discrete/non-reparameterizable models |
-| Reparameterization trick | Express samples as deterministic function of noise; enables low-variance gradients |
-| Autodiff | Automatic differentiation; computes exact gradients of any differentiable computation graph |
-| SVI | Stochastic VI using mini-batch data and Monte Carlo gradient estimates |
+- [`../Practice Questions/Problems_VI_Questions.pdf`](../Practice%20Questions/Problems_VI_Questions.pdf) — ELBO derivation, CAVI updates, reparameterization trick
+- [`../Practice Questions/SVI_Problems.pdf`](../Practice%20Questions/SVI_Problems.pdf) — Stochastic VI implementation and analysis

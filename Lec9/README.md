@@ -1,103 +1,58 @@
 # Lecture 9 – Diffusion Models
 
-**Course:** ELG 5218 / CSI 5218 / EACJ 5600 – Uncertainty Evaluation in Engineering Measurements and Machine Learning  
-**Date:** March 18, 2026  
-**Instructor:** Miodrag Bolic, University of Ottawa
+> **Revision summary** | ELG 5218 – Uncertainty Evaluation in Engineering Measurements and Machine Learning  
+> Slides: `Diffusion_Models_Uncertainty_in_ML_course_2026.pdf` · Notebooks: `Diffusion_Session_Notebook_v2.ipynb`, `DiffusionDet_real_inference_demo.ipynb`, `SANA_diffusion_trajectory_notebook.ipynb`  
+> Reading: Ho et al. (2020) DDPM; Song et al. (2021) Score-SDEs; Chen et al. (2023) DiffusionDet
 
 ---
 
-## Overview
+## Core Ideas
 
-This lecture introduces **Diffusion Models**, a class of deep generative models that have
-achieved state-of-the-art results in image, audio, and time-series generation.
-Rather than producing a single point estimate, diffusion models learn a **full probability
-distribution** through an iterative denoising process, making them inherently
-uncertainty-aware. The lecture connects diffusion models to three ideas already covered in
-the course: controlled noisy perturbations, score functions (gradients of log-density), and
-Langevin/stochastic dynamics.
+### Why Diffusion Models Fit This Course
+- Diffusion models learn a **full distribution** — not a point estimate.
+- Uncertainty is represented by the diversity of generated samples.
+- Builds on Langevin dynamics (Lec 3): score `∇_x log p(x)` drives denoising.
 
----
+### DDPM – Forward Process
+- Gradually corrupt `x₀` over `T` steps by adding Gaussian noise:
 
-## Learning Goals
+  `q(xₜ | xₜ₋₁) = N(xₜ; √(1−βₜ) xₜ₋₁, βₜ I)`
 
-By the end of this lecture you should be able to:
+- **Closed-form marginal:** `q(xₜ | x₀) = N(xₜ; √ᾱₜ x₀, (1−ᾱₜ)I)` where `ᾱₜ = ∏ᵢ₌₁ᵗ (1−βᵢ)`
+- At `t = T`: `xₜ ≈ N(0, I)` — pure noise.
 
-- Explain the intuition behind diffusion models and their connection to Langevin dynamics.
-- Describe the **DDPM forward process**: progressive Gaussian noise addition via a Markov chain.
-- Derive the **DDPM training objective**: predicting the noise ε added at each step.
-- Describe the **reverse sampling process** and explain how a neural network learns to denoise.
-- Explain **denoising score matching** and its connection to score-based generative models.
-- Understand extensions: **conditional diffusion**, **latent diffusion**, and **fast samplers** (DDIM, DPM-Solver).
-- Apply diffusion models to signals/time series (CSDI, autoregressive diffusion models).
-- Describe vision applications: text-to-image generation, object detection (DiffusionDet).
+### DDPM – Training Objective
+- A neural network `ε_θ(xₜ, t)` predicts the noise `ε` added to `x₀` at step `t`.
+- **Loss:** `L = E_{x₀, ε, t} [||ε − ε_θ(√ᾱₜ x₀ + √(1−ᾱₜ) ε, t)||²]`
+- Equivalent to denoising score matching: the network learns the score `∇_xₜ log q(xₜ)`.
 
----
+### DDPM – Reverse Sampling
+- Start from `xₜ ~ N(0, I)`, iteratively denoise:
 
-## Topics Covered
+  `xₜ₋₁ = (1/√αₜ)(xₜ − βₜ/√(1−ᾱₜ) · ε_θ(xₜ, t)) + √βₜ z`, `z ~ N(0,I)`
 
-### Diffusion Models (`Diffusion_Models_Uncertainty_in_ML_course_2026.pdf`)
+### Extensions
 
-**Story and score-based viewpoint**
-- Diffusion models represent distributions as the stationary state of a noising process.
-- **Score function**: ∇_x log p(x); points toward higher density regions.
-- **Denoising score matching**: train a network to estimate the score without knowing p(x).
-- Connection to Langevin Monte Carlo (Lec 3): score-based sampling.
-
-**DDPM Fundamentals**
-- **Forward process**: add Gaussian noise at each step t = 1…T; closed-form marginal q(x_t | x_0).
-- **Noise schedule** β_t: controls how fast the signal is destroyed.
-- **Reverse process**: learned Gaussian p_θ(x_{t-1} | x_t); parameterized by a U-Net or transformer.
-- **Training objective**: simplified ε-prediction loss; predict the noise added at step t.
-- **Reverse sampling**: start from x_T ~ N(0, I), iteratively denoise to x_0.
-
-**Extensions and Applications**
-- **Conditional diffusion**: condition on class labels, text prompts, or partial observations.
-- **Latent diffusion**: run the diffusion process in a compressed latent space (Stable Diffusion).
-- **Fast samplers**: DDIM (deterministic, fewer steps), DPM-Solver (ODE-based, ~20 steps).
-- **Signals and time series**: CSDI (conditional score-based diffusion for imputation); autoregressive diffusion for multivariate probabilistic forecasting.
-- **DiffusionDet**: diffusion process over bounding boxes for object detection.
+| Extension | Key idea |
+|---|---|
+| **Conditional diffusion** | Condition on class label, text, or partial observation during reverse process |
+| **Latent diffusion** | Run diffusion in a compressed VAE latent space; faster and more memory-efficient |
+| **DDIM** | Deterministic non-Markovian sampler; same model weights; fewer steps (~50 vs 1000) |
+| **DPM-Solver** | ODE-based fast sampler; ~20 function evaluations |
+| **CSDI** | Conditional score-based diffusion for time-series imputation |
+| **DiffusionDet** | Diffusion over bounding boxes for object detection |
 
 ---
 
-## Materials
+## Things to Remember
 
-| File | Description |
-|------|-------------|
-| `Diffusion_Models_Uncertainty_in_ML_course_2026.pdf` | Lecture slides: Diffusion models from foundations to applications (35 slides) |
-| `GeneratedSample.pptx` | Sample image generated by a diffusion model |
-| `Diffusion_Session_Notebook_v2.ipynb` | Notebook: DDPM implementation and experiments |
-| `DiffusionDet_real_inference_demo.ipynb` | Notebook: DiffusionDet object detection inference |
-| `SANA_diffusion_trajectory_notebook.ipynb` | Notebook: SANA diffusion trajectory visualization |
-| `READING - CSDI Diffusion.pdf` | Reading: CSDI – conditional score-based diffusion for time-series imputation |
-| `READING - Autoregressive Denoising Diffusion Models for Multivariate Probabilistic Time Series Forecasting.pdf` | Reading: Autoregressive diffusion for time-series forecasting |
-
----
-
-## Recommended Reading
-
-- **Chen, Shoufa, et al. (2023). *DiffusionDet: Diffusion Model for Object Detection*.** Proceedings of ICCV 2023.
-- **Ho, Jonathan, et al. (2020). *Denoising Diffusion Probabilistic Models (DDPM)*.** NeurIPS 2020.
-- **Song, Yang, et al. (2020). *Score-Based Generative Modeling through Stochastic Differential Equations*.** ICLR 2021.
+- The forward process is **fixed** (not learned); only the reverse network `ε_θ` is trained.
+- `ᾱₜ` controls the signal-to-noise ratio: `ᾱₜ → 0` as `t → T`.
+- Latent diffusion (Stable Diffusion) is more efficient but requires a pre-trained VAE encoder/decoder.
+- The ε-prediction loss and denoising score matching are mathematically equivalent.
 
 ---
 
 ## Practice Questions
 
-Practice questions for diffusion models are integrated into the course assignments and lab notebooks (see `Diffusion_Session_Notebook_v2.ipynb` for implementation exercises).
-
----
-
-## Key Concepts
-
-| Concept | Description |
-|---------|-------------|
-| Diffusion model | Generative model that learns to reverse a gradual noising process |
-| Forward process q | Fixed Markov chain: gradually adds Gaussian noise to data |
-| Reverse process p_θ | Learned Markov chain: denoises step by step; parameterized by a neural network |
-| Score function | ∇_x log p(x): gradient of log density; points toward high-probability regions |
-| Denoising score matching | Training objective: match score network to true score without explicit density |
-| ε-prediction objective | Simplified DDPM loss: predict the noise added at step t |
-| Noise schedule | Sequence β_1, …, β_T controlling how quickly the signal is destroyed |
-| DDIM | Deterministic non-Markovian sampler; same model, fewer function evaluations |
-| Latent diffusion | Diffusion in a compressed latent space; enables high-resolution generation |
-| Conditional diffusion | Guidance via class label, text embedding, or partial observation |
+Implementation exercises are in [`Diffusion_Session_Notebook_v2.ipynb`](Diffusion_Session_Notebook_v2.ipynb). See also the reading papers for theoretical questions on DDPM and score-based models.
